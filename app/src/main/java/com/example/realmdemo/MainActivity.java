@@ -13,9 +13,12 @@ import com.example.realmdemo.model.User;
 
 import java.util.UUID;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -123,9 +126,89 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void sampleQueryExample(View view) {
+
+/*
+        RealmQuery<User> realmQuery = myRealm.where(User.class);
+
+        realmQuery.greaterThan("age", 15); // Condition 1
+        realmQuery.contains("name", "john", Case.INSENSITIVE); // Condition 2
+
+        RealmResults<User> userList = realmQuery.findAll();
+        displayQueriedUsers(userList);
+*/
+
+        // Alternatively, let's use Fluid Interface
+/*
+        RealmResults<User> userList2 = myRealm.where(User.class)
+                .between("age", 15, 40) // AND
+                .beginGroup()
+                    .endsWith("name", "n")
+                    .or() // Explicitly Define OR operator
+                    .contains("name", "Pe")
+                .endGroup()
+                .findAll();
+*/
+        // Chaining Queries
+        RealmResults<User> userList2 = myRealm.where(User.class)
+                .findAll()
+                .sort("socialAccount.name", Sort.DESCENDING);
+
+        displayQueriedUsers(userList2);
+
+
+
+        // Update
+/*
+        myRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                User user = realm.where(User.class).findFirst();
+                user.setName("My New Name");
+                user.setAge(47);
+
+                SocialAccount socialAccount = user.getSocialAccount();
+                if (socialAccount != null) {
+                    socialAccount.setName("Snapchat");
+                    socialAccount.setStatus("Going for a stroll");
+                }
+
+            }
+        });
+*/
+
+    // Delete
+/*
+    myRealm.executeTransactionAsync(new Realm.Transaction() {
+        @Override
+        public void execute(Realm realm) {
+
+            User user = realm.where(User.class).findFirst();
+            user.deleteFromRealm(); // Delete a specific entry
+
+            RealmResults<User> userList = realm.where(User.class).findAll();
+            userList.deleteFirstFromRealm();
+            userList.deleteLastFromRealm();
+            userList.deleteFromRealm(3);
+            userList.deleteAllFromRealm(); // Delete Whole Realm
+
+        }
+    });
+*/
+
+
+    }
+
     public void displayAllUsers(View view) {
 
         RealmResults<User> userList = myRealm.where(User.class).findAll();
+
+        displayQueriedUsers(userList);
+
+    }
+
+    private void displayQueriedUsers(RealmResults<User> userList) {
 
         StringBuilder builder = new StringBuilder();
 
@@ -162,4 +245,6 @@ public class MainActivity extends AppCompatActivity {
         myRealm.close();
 
     }
+
+
 }
