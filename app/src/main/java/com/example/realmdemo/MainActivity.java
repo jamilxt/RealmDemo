@@ -1,5 +1,6 @@
 package com.example.realmdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -157,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
         displayQueriedUsers(userList2);
 
 
-
         // Update
 /*
         myRealm.executeTransactionAsync(new Realm.Transaction() {
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         });
 */
 
-    // Delete
+        // Delete
 /*
     myRealm.executeTransactionAsync(new Realm.Transaction() {
         @Override
@@ -247,4 +247,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void openDisplayActivity(View view) {
+
+        Intent intent = new Intent(this, DisplayActivity.class);
+        startActivity(intent);
+
+    }
 }
