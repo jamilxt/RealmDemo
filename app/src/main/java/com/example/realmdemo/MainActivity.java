@@ -17,6 +17,7 @@ import java.util.UUID;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
+import io.realm.RealmChangeListener;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private Realm myRealm;
     private RealmAsyncTask realmAsyncTask;
 
+    private RealmResults<User> userList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
         etStatus = findViewById(R.id.etStatus);
 
         myRealm = Realm.getDefaultInstance();
+
+//        Realm myAnotherRealm = MyApplication.getAnotherRealm();
+
+        Log.i(TAG, "Current Version: " + myRealm.getVersion());
 
     }
 
@@ -228,9 +235,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void exploreMiscConcepts(View view) {
+
+        userList = myRealm.where(User.class).findAllAsync();
+        userList.addChangeListener(userListListener);
+
+/*
+        if (userList.isLoaded()) {
+            userList.deleteFirstFromRealm();
+        }
+*/
+
+    }
+
+    RealmChangeListener<RealmResults<User>> userListListener = new RealmChangeListener<RealmResults<User>>() {
+        @Override
+        public void onChange(RealmResults<User> userList) {
+
+            displayQueriedUsers(userList);
+
+        }
+    };
+
     @Override
     protected void onStop() {
         super.onStop();
+
+        if (userList != null)
+            userList.removeChangeListener(userListListener); // Remove a particular Listener
+            // or, userList.removeAllChangeListeners();     // Remove all Registered Listeners
 
         if (realmAsyncTask != null && !realmAsyncTask.isCancelled()) {
             realmAsyncTask.cancel();

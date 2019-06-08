@@ -10,7 +10,9 @@ public class User extends RealmObject {
     private String id;
     private String name;
     private int age;
+    private String hobby;
     private SocialAccount socialAccount; // one to one / many to one relationship
+    private Company company;
 
 
     public String getId() {
@@ -43,5 +45,21 @@ public class User extends RealmObject {
 
     public void setSocialAccount(SocialAccount socialAccount) {
         this.socialAccount = socialAccount;
+    }
+
+    public String getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }
